@@ -258,6 +258,9 @@ func parseMessage(raw json.RawMessage) ([]*jsonrpcMessage, bool, error) {
 	if !isBatch(raw) {
 		msgs := []*jsonrpcMessage{{}}
 		json.Unmarshal(raw, &msgs[0])
+		if msgs[0] == nil {
+			return nil, false, &invalidRequestError{"invalid request"}
+		}
 		return msgs, false, nil
 	}
 	dec := json.NewDecoder(bytes.NewReader(raw))
